@@ -53,17 +53,29 @@ class WarbleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Warble $warble)
+    public function edit(Warble $warble): View
     {
-        //
+        $this->authorize('update', $warble);
+
+        return view('warble.edit', [
+            'warble' => $warble,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Warble $warble)
+    public function update(Request $request, Warble $warble): RedirectResponse
     {
-        //
+        $this->authorize('update', $warble);
+
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+
+        $warble->update($validated);
+
+        return redirect(route('warble.index'));
     }
 
     /**
